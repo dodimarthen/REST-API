@@ -1,0 +1,20 @@
+{
+  "name": "restapi-node",
+  "version": "1.0.0",
+  "description": "RESTful API",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dodimarthen/REST-API.git"
+  },
+  "author": "Dody Marthen",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/dodimarthen/REST-API/issues"
+  },
+  "homepage": "https://github.com/dodimarthen/REST-API#readme"
+}
