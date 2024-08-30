@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/dodimarthen/REST-API#readme",
   "dependencies": {
+    "@prisma/client": "^5.19.0",
     "bcrypt": "^5.1.1",
     "express": "^4.19.2",
     "joi": "^17.13.3",
