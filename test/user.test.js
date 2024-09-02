@@ -1,27 +1,24 @@
 import supertest from "supertest";
 import { web } from "../src/application/web.js";
-import { prismaCLient } from "../src/application/dbase.js";
 import { logger } from "../src/application/logging.js";
-import e from "express";
+import { removeTestUser, createTestUser } from "./test-util.js";
+import { prismaCLient } from "../src/application/dbase.js";
 
 describe("POST /api/users", function () {
   afterEach(async () => {
-    await prismaCLient.user.deleteMany({
-      where: {
-        username: "johndoe12",
-      },
-    });
+    await removeTestUser();
   });
 
   it("should can do register new user", async () => {
     const result = await supertest(web).post("/api/users").send({
-      username: "johndoe12",
+      username: "test",
       password: "rahasia",
-      name: "John",
+      name: "test",
     });
+
     expect(result.status).toBe(200);
-    expect(result.body.data.username).toBe("johndoe12");
-    expect(result.body.data.name).toBe("John");
+    expect(result.body.data.username).toBe("test");
+    expect(result.body.data.name).toBe("test");
     expect(result.body.data.password).toBeUndefined();
   });
 
@@ -39,23 +36,46 @@ describe("POST /api/users", function () {
 
   it("should reject if username is already registered", async () => {
     let result = await supertest(web).post("/api/users").send({
-      username: "johndoe12",
+      username: "test",
       password: "rahasia",
-      name: "John",
+      name: "test",
     });
     logger.info(result.body);
     expect(result.status).toBe(200);
-    expect(result.body.data.username).toBe("johndoe12");
-    expect(result.body.data.name).toBe("John");
+    expect(result.body.data.username).toBe("test");
+    expect(result.body.data.name).toBe("test");
     expect(result.body.data.password).toBeUndefined();
 
     result = await supertest(web).post("/api/users").send({
-      username: "johndoe12",
+      username: "test",
       password: "rahasia",
-      name: "John",
+      name: "test",
     });
     logger.info(result.body);
     expect(result.status).toBe(400);
     expect(result.body.errors).toBeDefined();
+  });
+});
+
+describe("POST /api/users/login", function () {
+  beforeEach(async () => {
+    await createTestUser();
+  });
+
+  afterEach(async () => {
+    await removeTestUser();
+  });
+
+  it("should can login", async () => {
+    const result = await supertest(web).post("/api/users/login").send({
+      username: "test",
+      password: "rahasia",
+    });
+
+    logger.info(result.body);
+
+    expect(result.status).toBe(200);
+    expect(result.body.data.token).toBeDefined();
+    expect(result.body.data.token).not.toBe("test");
   });
 });
